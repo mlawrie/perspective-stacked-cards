@@ -17,6 +17,10 @@ body {
     width: 350px;
 }
 
+#wrapper {
+    position: relative;
+}
+
 .card {
     position: relative;
     display: block;
@@ -45,4 +49,14 @@ h3 {
 
 .hovered {
     outline: 5px solid rgba(0,120,255, 0.5);
+}
+
+#inner-cursor {
+    z-index: 999;
+    position: absolute;
+    border: 2px solid #f00;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border-radius: 30px;
 }
