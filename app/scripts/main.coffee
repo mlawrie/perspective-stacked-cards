@@ -58,9 +58,10 @@ class Card
     @el.addClass 'hovered' if @isTopmostHovered
     @el.removeClass 'hovered' unless @isTopmostHovered
 
-  reorderIfNeeded: (mousePosition) ->
-    topPositions = []
+  reorderIfNeeded: () ->
     myTopPosition = @el.position().top
+
+    topPositions = []
     for card in cards
       topPositions[card.index] = card.el.position().top
 
