@@ -25,6 +25,7 @@ class Card
     mousePosition = webkitConvertPointFromPageToNode container.get(0), new WebKitPoint(event.clientX, event.clientY)
     @originalMouseX = mousePosition.x
     @originalMouseY = mousePosition.y
+    @yOffset = 0
 
   onMouseUp: () ->
     return unless draggedCard && draggedCard.id == @id
@@ -40,15 +41,11 @@ class Card
 
     mousePosition = webkitConvertPointFromPageToNode container.get(0), new WebKitPoint(event.pageX, event.pageY)
     originalTopPosition = @el.position().top
-    if @reorderIfNeeded()
-      console.log ('reordering');
-      card.getIndexFromDom() for card in cards
-      delta = @el.position().top - originalTopPosition
-      @originalMouseY = mousePosition.y
 
-    @el.css 'top', mousePosition.y - @originalMouseY
+    @reorderIfNeeded()
+
+    @el.css 'top', mousePosition.y - @originalMouseY + @yOffset
     @el.css 'left', mousePosition.x - @originalMouseX
-
 
   setIsTopmostHovered: (topmostHoveredCardIndex) ->
     lastTopmostHovered = @isTopmostHovered
@@ -65,20 +62,23 @@ class Card
     for card in cards
       topPositions[card.index] = card.el.position().top
 
+    # Swap this card with the one above it
     if topPositions[@index - 1] > myTopPosition
       @el.insertBefore @el.prev()
-      return true
+      @yOffset += 40
+      card.getIndexFromDom() for card in cards
 
+    # Swap this card with the one below it
     if topPositions[@index + 1] < myTopPosition && topPositions[@index + 1]
       @el.insertAfter @el.next()
-      return true
-    return false
+      @yOffset -= 40
+      card.getIndexFromDom() for card in cards
 
   getIndexFromDom: () ->
     @index = index for element, index in $('#container .card') when element is @el.get(0)
 
   css3FadeIn: () ->
-    @el.addClass('faderBaseClass')
+    @el.addClass 'faderBaseClass'
     delay 0, () =>
       @el.addClass 'faderShowClass'
     delay 200, () =>
@@ -102,7 +102,7 @@ $ ->
     innerCursor.css 'left', mousePosition.x
     innerCursor.css 'top', mousePosition.y
 
-    topmostHoveredCardIndex = Math.max (card.index for card in cards when card.isHoveredByEvent event )...
+    topmostHoveredCardIndex = Math.max (card.index for card in cards when card.isHoveredByEvent(event))...
     card.setIsTopmostHovered(topmostHoveredCardIndex) for card in cards
 
     card.onMouseMove(event) for card in cards
