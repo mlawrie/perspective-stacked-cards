@@ -58,7 +58,7 @@ h3 {
 
 .dragOn .dragged {
     outline: 5px solid rgba(255,120,0, 0.7);
-    -webkit-transform: rotateZ(-5deg);
+    //-webkit-transform: rotateZ(-5deg);
     z-index: 999;
 
 }
